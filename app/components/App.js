@@ -27,6 +27,16 @@ class App extends Component {
   updateAttendees = attendees => this.setState({ attendees });
 
   render() {
+    const places = this.state.venues.map(venue => ({
+      name: venue.name,
+      cannotDrink: this.state.users.filter(user =>
+        user.drinks.every(drink => !venue.drinks.includes(drink))
+      ),
+      cannotEat: this.state.users.filter(user =>
+        venue.food.every(meal => user.wont_eat.includes(meal))
+      )
+    }));
+
     return (
       <div>
         <Attending
@@ -35,12 +45,14 @@ class App extends Component {
           updateAttendees={this.updateAttendees}
         />
         <PlacesToGo
-          venues={this.state.venues}
-          attendees={this.state.attendees}
+          places={places.filter(
+            p => !p.cannotEat.length && !p.cannotDrink.length
+          )}
         />
         <PlacesToAvoid
-          venues={this.state.venues}
-          attendees={this.state.attendees}
+          places={places.filter(
+            p => p.cannotEat.length || p.cannotDrink.length
+          )}
         />
       </div>
     );
