@@ -1,0 +1,8 @@
+{
+  "name": "where-should-we-go",
+  "version": "1.0.0",
+  "description": "Where should we go?",
+  "main": "index.js",
+  "author": "Anthony GARCIA <anthony.garlab@gmail.com>",
+  "license": "MIT"
+}
