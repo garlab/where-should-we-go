@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     users: [],
     venues: [],
-    attending: []
+    attendees: []
   };
 
   componentDidMount() {
@@ -24,17 +24,23 @@ class App extends Component {
       .then(venues => this.setState({ venues }));
   }
 
+  updateAttendees = attendees => this.setState({ attendees });
+
   render() {
     return (
       <div>
-        <Attending users={this.state.users} attending={this.state.attending} />
+        <Attending
+          users={this.state.users}
+          attendees={this.state.attendees}
+          updateAttendees={this.updateAttendees}
+        />
         <PlacesToGo
           venues={this.state.venues}
-          attending={this.state.attending}
+          attendees={this.state.attendees}
         />
         <PlacesToAvoid
           venues={this.state.venues}
-          attending={this.state.attending}
+          attendees={this.state.attendees}
         />
       </div>
     );
