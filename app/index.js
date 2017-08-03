@@ -2,7 +2,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-render(
-  <div>{"Hello world"}</div>,
-  document.getElementById('app'),
-);
+import App from './components/App';
+
+render(<App />, document.getElementById('app'));
