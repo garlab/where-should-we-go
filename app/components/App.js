@@ -1,14 +1,12 @@
 // @flow
 import React, { Component } from 'react';
+import fetch from 'isomorphic-fetch';
 
 import Attending from './Attending';
 import PlacesToGo from './PlacesToGo';
 import PlacesToAvoid from './PlacesToAvoid';
 
-const baseUrl =
-  'https://gist.githubusercontent.com/benjambles/ea36b76bc5d8ff09a51def54f6ebd0cb/raw/524e40ec297353b8070ff10ee0d9d847e44210f5';
-const usersUrl = `${baseUrl}/users.json`;
-const venuesUrl = `${baseUrl}/venues.json`;
+const baseUrl = '/json';
 
 class App extends Component {
   state = {
@@ -17,12 +15,27 @@ class App extends Component {
     attending: []
   };
 
+  componentDidMount() {
+    fetch(`${baseUrl}/users.json`)
+      .then(res => res.json())
+      .then(users => this.setState({ users }));
+    fetch(`${baseUrl}/venues.json`)
+      .then(res => res.json())
+      .then(venues => this.setState({ venues }));
+  }
+
   render() {
     return (
       <div>
-        <Attending />
-        <PlacesToGo />
-        <PlacesToAvoid />
+        <Attending users={this.state.users} attending={this.state.attending} />
+        <PlacesToGo
+          venues={this.state.venues}
+          attending={this.state.attending}
+        />
+        <PlacesToAvoid
+          venues={this.state.venues}
+          attending={this.state.attending}
+        />
       </div>
     );
   }
