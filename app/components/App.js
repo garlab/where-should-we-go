@@ -1,7 +1,8 @@
-// @flow
 import React, { Component } from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
 import fetch from 'isomorphic-fetch';
 
+import Team from './Team';
 import Attending from './Attending';
 import PlacesToGo from './PlacesToGo';
 import PlacesToAvoid from './PlacesToAvoid';
@@ -27,34 +28,49 @@ class App extends Component {
   updateAttendees = attendees => this.setState({ attendees });
 
   render() {
-    const places = this.state.venues.map(venue => ({
+    const { venues, attendees } = this.state;
+
+    const places = venues.map(venue => ({
       name: venue.name,
-      cannotDrink: this.state.users.filter(user =>
+      cannotDrink: attendees.filter(user =>
         user.drinks.every(drink => !venue.drinks.includes(drink))
       ),
-      cannotEat: this.state.users.filter(user =>
+      cannotEat: attendees.filter(user =>
         venue.food.every(meal => user.wont_eat.includes(meal))
       )
     }));
 
     return (
-      <div>
-        <Attending
-          users={this.state.users}
-          attendees={this.state.attendees}
-          updateAttendees={this.updateAttendees}
-        />
-        <PlacesToGo
-          places={places.filter(
-            p => !p.cannotEat.length && !p.cannotDrink.length
-          )}
-        />
-        <PlacesToAvoid
-          places={places.filter(
-            p => p.cannotEat.length || p.cannotDrink.length
-          )}
-        />
-      </div>
+      <Grid>
+        <Row>
+          <Col xs={12} sm={6}>
+            <Team users={this.state.users} />
+          </Col>
+          <Col xs={12} sm={6}>
+            <Attending
+              users={this.state.users}
+              attendees={this.state.attendees}
+              updateAttendees={this.updateAttendees}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} sm={6}>
+            <PlacesToGo
+              places={places.filter(
+                p => !p.cannotEat.length && !p.cannotDrink.length
+              )}
+            />
+          </Col>
+          <Col xs={12} sm={6}>
+            <PlacesToAvoid
+              places={places.filter(
+                p => p.cannotEat.length || p.cannotDrink.length
+              )}
+            />
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

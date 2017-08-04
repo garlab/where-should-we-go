@@ -1,13 +1,22 @@
-// @flow
 import React, { Component } from 'react';
-import { Panel, Button } from 'react-bootstrap';
+import { Button, Glyphicon, Panel } from 'react-bootstrap';
 
-const Attendees = ({ attendees }) =>
+const styles = {
+  attendeeRow: { minHeight: 24 }
+};
+
+const ButtonRemove = ({ name, onRemove }) =>
+  <Button bsSize="xsmall" className="pull-right" onClick={onRemove(name)}>
+    <Glyphicon glyph="remove" />
+  </Button>;
+
+const Attendees = ({ attendees, onRemove }) =>
   attendees.length
     ? <ul>
-        {attendees.map(name =>
-          <li key={name}>
-            {name}
+        {attendees.map(attendee =>
+          <li key={attendee.name} style={styles.attendeeRow}>
+            {attendee.name}
+            <ButtonRemove name={attendee.name} onRemove={onRemove} />
           </li>
         )}
       </ul>
@@ -36,22 +45,38 @@ class Attending extends Component {
     name: ''
   };
 
-  onNameChange = e => this.setState({ name: e.target.value });
+  handleNameChange = e => this.setState({ name: e.target.value });
 
-  onAdd = e => {
+  handleAdd = e => {
     e.preventDefault();
-    this.props.updateAttendees([...this.props.attendees, this.state.name]);
-    this.setState({ name: '' });
+
+    const attendee = this.props.users.find(u => u.name === this.state.name);
+    if (attendee) {
+      if (!this.props.attendees.includes(attendee)) {
+        this.props.updateAttendees([...this.props.attendees, attendee]);
+      }
+      this.setState({ name: '' });
+    } else {
+      console.error("user doesn't exist");
+    }
   };
+
+  handleRemove = name => () =>
+    this.props.updateAttendees(
+      this.props.attendees.filter(a => a.name !== name)
+    );
 
   render() {
     return (
       <Panel header="Attending">
-        <Attendees attendees={this.props.attendees} />
+        <Attendees
+          attendees={this.props.attendees}
+          onRemove={this.handleRemove}
+        />
         <AddAttendee
           name={this.state.name}
-          onChange={this.onNameChange}
-          onAdd={this.onAdd}
+          onChange={this.handleNameChange}
+          onAdd={this.handleAdd}
         />
       </Panel>
     );

@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 
@@ -20,7 +19,7 @@ const PlacesToAvoid = ({ places }) =>
             </li>
           )}
         </ul>
-      : 'None'};
+      : 'None'}
   </Panel>;
 
 export default PlacesToAvoid;
